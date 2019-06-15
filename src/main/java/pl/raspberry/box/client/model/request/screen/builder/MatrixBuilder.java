@@ -1,10 +1,12 @@
-package pl.raspberry.box.client.model.request.screen;
+package pl.raspberry.box.client.model.request.screen.builder;
 
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import pl.raspberry.box.client.util.ListUtil;
+import pl.raspberry.box.client.model.request.screen.Column;
+import pl.raspberry.box.client.model.request.screen.MatrixLine;
+import pl.raspberry.box.client.model.request.screen.Row;
+import pl.raspberry.box.client.util.MatrixUtil;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +32,7 @@ public class MatrixBuilder {
             System.out.println("Warning: rows and columns used, notice that 1 will overwrite 0's");
         }
 
-        List<List<Integer>> matrix = initMatrix();
+        List<List<Integer>> matrix = MatrixUtil.initMatrix(MatrixLine.SIZE);
         if (!CollectionUtils.isEmpty(rows)) {
             rows.forEach(row -> {
                 MatrixLine.forEachIndex(colIndex -> {
@@ -49,15 +51,6 @@ public class MatrixBuilder {
                 });
             });
         }
-        return matrix;
-    }
-
-    private List<List<Integer>> initMatrix() {
-        List<List<Integer>> matrix = new ArrayList<>(MatrixLine.SIZE);
-        ListUtil.initList(matrix, () -> new ArrayList<>(MatrixLine.SIZE), MatrixLine.SIZE);
-        matrix.forEach(row -> {
-            ListUtil.initList(row, () -> 0, MatrixLine.SIZE);
-        });
         return matrix;
     }
 
