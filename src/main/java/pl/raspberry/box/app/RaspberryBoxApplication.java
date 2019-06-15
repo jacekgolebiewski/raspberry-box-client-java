@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import pl.raspberry.box.client.model.request.led.LedColor;
 import pl.raspberry.box.client.model.request.led.LedRequest;
 import pl.raspberry.box.client.model.request.led.LedState;
+import pl.raspberry.box.client.model.request.screen.ScreenRequest;
 import pl.raspberry.box.client.model.response.Response;
 import pl.raspberry.box.client.model.response.button.Button;
 import pl.raspberry.box.client.model.response.button.ButtonAction;
@@ -14,6 +15,7 @@ import pl.raspberry.box.client.service.WebSocketService;
 import pl.raspberry.box.client.service.console.ConsoleInputProcessor;
 import pl.raspberry.box.client.service.console.PropertyRequestConsoleInputProcessor;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -49,14 +51,29 @@ public abstract class RaspberryBoxApplication {
 
     abstract public String getBoxAddress();
 
+    private void processConsoleInput(String line) {
+        try{
+            onConsoleInput(line);
+        } catch (Exception e) {
+            System.out.println("onConsoleInput thrown exception:");
+            e.printStackTrace();
+        }
+    };
+
     abstract public void onConsoleInput(String line);
 
-    public void onButtonAction(ButtonResponse response) {
-        if (response.getAction().equals(ButtonAction.PRESSED)) {
-            onButtonPressed(response.getButton());
-        } else {
-            onButtonReleased(response.getButton());
+    private void onButtonAction(ButtonResponse response) {
+        try{
+            if (response.getAction().equals(ButtonAction.PRESSED)) {
+                onButtonPressed(response.getButton());
+            } else {
+                onButtonReleased(response.getButton());
+            }
+        } catch (Exception e) {
+            System.out.println("onButtonPressed/onButtonReleased thrown exception:");
+            e.printStackTrace();
         }
+
     }
 
     abstract public void onButtonPressed(Button button);
@@ -65,6 +82,10 @@ public abstract class RaspberryBoxApplication {
 
     public void switchLed(LedColor color, LedState state) {
         this.webSocketService.sendRequest(new LedRequest(color, state));
+    }
+
+    public void setScreenFrame(List<List<Integer>> matrix) {
+        this.webSocketService.sendRequest(new ScreenRequest(matrix));
     }
 
     private ConsoleInputProcessor createApplicationInputProcessor() {
@@ -81,7 +102,7 @@ public abstract class RaspberryBoxApplication {
 
             @Override
             public void process(String line) {
-                onConsoleInput(line);
+                processConsoleInput(line);
             }
         };
     }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import pl.raspberry.box.client.model.request.led.LedRequest;
+import pl.raspberry.box.client.model.request.screen.ScreenRequest;
 
 import java.util.UUID;
 
@@ -12,7 +13,8 @@ import java.util.UUID;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MessageRequest.class, name = MessageRequest.NAME),
         @JsonSubTypes.Type(value = PropertyRequest.class, name = PropertyRequest.NAME),
-        @JsonSubTypes.Type(value = LedRequest.class, name = LedRequest.NAME)
+        @JsonSubTypes.Type(value = LedRequest.class, name = LedRequest.NAME),
+        @JsonSubTypes.Type(value = ScreenRequest.class, name = ScreenRequest.NAME)
 })
 public class Request {
 
