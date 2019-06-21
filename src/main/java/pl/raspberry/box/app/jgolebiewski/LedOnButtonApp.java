@@ -1,34 +1,57 @@
 package pl.raspberry.box.app.jgolebiewski;
 
+import lombok.extern.slf4j.Slf4j;
 import pl.raspberry.box.app.RaspberryBoxApplication;
-import pl.raspberry.box.client.model.request.led.LedColor;
-import pl.raspberry.box.client.model.request.led.LedState;
 import pl.raspberry.box.client.model.request.screen.MatrixLine;
 import pl.raspberry.box.client.model.request.screen.Row;
 import pl.raspberry.box.client.model.request.screen.builder.MatrixBuilder;
 import pl.raspberry.box.client.model.response.button.Button;
+import pl.raspberry.box.client.service.ScreenService;
+import pl.raspberry.box.client.service.console.ConsoleInputService;
 
 import java.util.stream.IntStream;
 
+@Slf4j
 public class LedOnButtonApp extends RaspberryBoxApplication {
 
-    private static final String HOST = "ws://192.168.0.15:9001";
+    private final ScreenService screenService = new ScreenService();
+    private final ConsoleInputService consoleInputService = new ConsoleInputService();
+
+    private Integer score = 0;
 
     @Override
-    public void init() {
-        System.out.println("Game started!");
+    public void onApplicationStarted() {
+        log.debug("Game started!");
+        while(true) {
+            String line = consoleInputService.readLine();
+            if (line.equals("exit")) {
+                break;
+            }
+            onConsoleInput(line);
+        }
     }
 
     @Override
-    public String getBoxAddress() {
-        return HOST;
+    public void onApplicationStopped() {
+        log.debug("Score: " + score);
     }
 
     @Override
-    public void onConsoleInput(String line) {
-        if (line.contains("red")) {
-            switchLed(LedColor.RED, LedState.ON);
-        } else if (line.contains("fill")) {
+    public void onButtonPressed(Button button) {
+        if (button == Button.A) {
+            log.debug("A PRESSED!");
+        } else {
+            log.debug("B PRESSED!");
+        }
+    }
+
+    @Override
+    public void onButtonReleased(Button button) {
+
+    }
+
+    private void onConsoleInput(String line) {
+        if (line.contains("fill")) {
             String[] splitedLine = line.split("fill");
             int level = Integer.parseInt(splitedLine[splitedLine.length - 1].trim());
             fillScreen(level);
@@ -44,35 +67,19 @@ public class LedOnButtonApp extends RaspberryBoxApplication {
                 });
             }
         } else {
-            System.out.println("Command not supported");
+            log.debug("Command not supported");
         }
     }
 
     private void fillScreen(int level) {
         if (level < 0 || level > MatrixLine.SIZE - 1) {
-            System.out.println("Fill level must be from range 0-8");
+            log.warn("Fill level must be from range 0-8");
             return;
         }
 
         MatrixBuilder builder = new MatrixBuilder();
         IntStream.range(0, level+1).forEach(index -> builder.addRow(Row.createFullRow(7 - index)));
-        setScreenFrame(builder.build());
-    }
-
-    @Override
-    public void onButtonPressed(Button button) {
-        if (button == Button.A) {
-            System.out.println("START!");
-            switchLed(LedColor.GREEN, LedState.ON);
-        } else {
-            System.out.println("STOP!");
-            switchLed(LedColor.GREEN, LedState.OFF);
-        }
-    }
-
-    @Override
-    public void onButtonReleased(Button button) {
-
+        screenService.setScreenFrame(builder.build());
     }
 
 }

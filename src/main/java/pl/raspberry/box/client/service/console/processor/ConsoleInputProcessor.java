@@ -1,4 +1,4 @@
-package pl.raspberry.box.client.service.console;
+package pl.raspberry.box.client.service.console.processor;
 
 public interface ConsoleInputProcessor {
 

@@ -1,6 +1,7 @@
 package pl.raspberry.box.client.model.request.screen.builder;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import pl.raspberry.box.client.model.request.screen.Column;
 import pl.raspberry.box.client.model.request.screen.MatrixLine;
@@ -11,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Slf4j
 @NoArgsConstructor
 public class MatrixBuilder {
 
@@ -29,7 +31,7 @@ public class MatrixBuilder {
 
     public List<List<Integer>> build() {
         if (!CollectionUtils.isEmpty(rows) && !CollectionUtils.isEmpty(columns)) {
-            System.out.println("Warning: rows and columns used, notice that 1 will overwrite 0's");
+            log.warn("Warning: rows and columns used, notice that 1 will overwrite 0's");
         }
 
         List<List<Integer>> matrix = MatrixUtil.initMatrix(MatrixLine.SIZE);

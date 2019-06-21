@@ -1,13 +1,11 @@
-package pl.raspberry.box.client.service.console;
+package pl.raspberry.box.client.service.console.processor;
 
-import lombok.RequiredArgsConstructor;
 import pl.raspberry.box.client.model.request.PropertyRequest;
-import pl.raspberry.box.client.service.WebSocketService;
+import pl.raspberry.box.client.service.websocket.WebSocketService;
 
-@RequiredArgsConstructor
 public class PropertyRequestConsoleInputProcessor implements ConsoleInputProcessor {
 
-    private final WebSocketService webSocketService;
+    private final WebSocketService webSocketService = WebSocketService.getInstance();
 
     @Override
     public int getPriority() {
