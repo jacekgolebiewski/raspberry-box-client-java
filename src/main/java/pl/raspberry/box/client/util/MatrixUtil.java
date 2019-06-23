@@ -1,28 +1,36 @@
 package pl.raspberry.box.client.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+/**
+ * First index is row number
+ */
 public class MatrixUtil {
 
     public static List<List<Integer>> initMatrix(int size) {
-        List<List<Integer>> matrix = new ArrayList<>(size);
-        ListUtil.initList(matrix, () -> new ArrayList<>(size), size);
-        matrix.forEach(row -> {
-            ListUtil.initList(row, () -> 0, size);
-        });
-        return matrix;
+        return Stream.generate(() -> new ArrayList<>(Collections.nCopies(size, 0)))
+                .limit(size)
+                .collect(Collectors.toList());
     }
 
     public static List<List<Integer>> flipVertically(List<List<Integer>> matrix) {
         int size = matrix.size();
-        return transformMatrix(matrix, (source) -> new Pair<>(size - source.getFirst() - 1, source.getSecond()));
+        return transformMatrix(matrix, source -> new Pair<>(size - source.getFirst() - 1, source.getSecond()));
     }
 
     public static List<List<Integer>> flipHorizontally(List<List<Integer>> matrix) {
         int size = matrix.size();
-        return transformMatrix(matrix, (source) -> new Pair<>(source.getFirst(), size - source.getSecond() - 1));
+        return transformMatrix(matrix, source -> new Pair<>(source.getFirst(), size - source.getSecond() - 1));
+    }
+
+    public static List<List<Integer>> shiftLeft(List<List<Integer>> matrix) {
+        int size = matrix.size();
+        return transformMatrix(matrix, source -> new Pair<>(source.getFirst(), (source.getSecond() -1 + size) % size));
     }
 
     public static List<List<Integer>> rotate(List<List<Integer>> matrix, int count) {
@@ -44,7 +52,11 @@ public class MatrixUtil {
 
     private static List<List<Integer>> rotateClockwise(List<List<Integer>> matrix) {
         int size = matrix.size();
-        return transformMatrix(matrix, (source) -> new Pair<>(source.getSecond(), size - source.getFirst() - 1));
+        return transformMatrix(matrix, source -> new Pair<>(source.getSecond(), size - source.getFirst() - 1));
+    }
+
+    public static List<List<Integer>> clone(List<List<Integer>> matrix) {
+        return transformMatrix(matrix, Function.identity());
     }
 
     private static List<List<Integer>> transformMatrix(List<List<Integer>> matrix, Function<Pair<Integer>, Pair<Integer>> indexTransform) {

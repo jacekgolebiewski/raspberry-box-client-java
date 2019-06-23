@@ -23,7 +23,7 @@ public class ConsoleInputService {
     public String readLine() {
         try {
             String line;
-            while(true) {
+            while (true) {
                 line = bufferedReader.readLine();
                 Optional<ConsoleInputProcessor> processor = getInputProcessor(line);
                 if (!processor.isPresent()) {

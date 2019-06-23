@@ -23,7 +23,9 @@ public class WebSocketService {
 
     private static String host = LOCALHOST;
     private WebSocket webSocket;
-    private Consumer<Response> onResponseHandler;
+    private Consumer<Response> onResponseHandler = (response) -> {};
+    private Runnable onConnectHandler = () -> {};
+    private Runnable onDisconnectHandler = () -> {};
 
     public static void configure(String host) {
         WebSocketService.host = host;
@@ -33,32 +35,16 @@ public class WebSocketService {
 
     public static WebSocketService getInstance() {
         if (instance == null) {
-            instance = new WebSocketService(host);
+            instance = new WebSocketService();
         }
         return instance;
     }
 
-    private WebSocketService(String host) {
-        init(host);
-    }
-
-    private void init(String host) {
-        try {
-            this.webSocket = new WebSocketFactory()
-                    .setConnectionTimeout(TIMEOUT)
-                    .createSocket(host)
-                    .addExtension(WebSocketExtension.PERMESSAGE_DEFLATE);
-            this.webSocket.addListener(CustomWebSocketAdapter.builder()
-                    .onDisconnect(this::connect)
-                    .onResponse(text -> onResponseHandler.accept(convertTextToResponse(text)))
-                    .build());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+    private WebSocketService() {
     }
 
     public WebSocketService connect() {
+        init();
         while (true) {
             if(this.webSocket.getState() == WebSocketState.CREATED) {
                 try {
@@ -69,11 +55,29 @@ public class WebSocketService {
                 }
             }
             try {
+                this.webSocket.sendClose();
                 Thread.sleep(1000);
                 this.webSocket = this.webSocket.recreate();
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    private void init() {
+        try {
+            this.webSocket = new WebSocketFactory()
+                    .setConnectionTimeout(TIMEOUT)
+                    .createSocket(host)
+                    .addExtension(WebSocketExtension.PERMESSAGE_DEFLATE);
+            this.webSocket.addListener(CustomWebSocketAdapter.builder()
+                    .onConnect(onConnectHandler)
+                    .onDisconnect(onDisconnectHandler)
+                    .onResponse(text -> onResponseHandler.accept(convertTextToResponse(text)))
+                    .build());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -86,7 +90,20 @@ public class WebSocketService {
         return this;
     }
 
+    public WebSocketService onConnect(Runnable onConnect) {
+        this.onConnectHandler = onConnect;
+        return this;
+    }
+
+    public WebSocketService onDisconnect(Runnable onDisconnect) {
+        this.onDisconnectHandler = onDisconnect;
+        return this;
+    }
+
     public void sendRequest(Request request) {
+        if (this.webSocket.getState() != WebSocketState.OPEN) {
+            this.connect();
+        }
         try {
             String requestText = ObjectMapperUtil.getObjectMapper().writeValueAsString(request);
             this.webSocket.sendText(requestText);

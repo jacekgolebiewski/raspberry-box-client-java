@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.raspberry.box.client.model.request.Request;
 import pl.raspberry.box.client.model.response.button.ButtonResponse;
+import pl.raspberry.box.client.model.response.distance.DistanceResponse;
 import pl.raspberry.box.client.model.response.message.MessageResponse;
 
 @Data
@@ -16,6 +17,7 @@ import pl.raspberry.box.client.model.response.message.MessageResponse;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MessageResponse.class, name = MessageResponse.NAME),
         @JsonSubTypes.Type(value = ButtonResponse.class, name = ButtonResponse.NAME),
+        @JsonSubTypes.Type(value = DistanceResponse.class, name = DistanceResponse.NAME),
 
 })
 public class Response {

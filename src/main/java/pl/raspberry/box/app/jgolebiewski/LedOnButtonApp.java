@@ -2,13 +2,13 @@ package pl.raspberry.box.app.jgolebiewski;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.raspberry.box.app.RaspberryBoxApplication;
-import pl.raspberry.box.client.model.request.screen.MatrixLine;
-import pl.raspberry.box.client.model.request.screen.Row;
-import pl.raspberry.box.client.model.request.screen.builder.MatrixBuilder;
+import pl.raspberry.box.client.model.request.screen.Matrix;
 import pl.raspberry.box.client.model.response.button.Button;
 import pl.raspberry.box.client.service.ScreenService;
 import pl.raspberry.box.client.service.console.ConsoleInputService;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -22,18 +22,25 @@ public class LedOnButtonApp extends RaspberryBoxApplication {
     @Override
     public void onApplicationStarted() {
         log.debug("Game started!");
-        while(true) {
-            String line = consoleInputService.readLine();
-            if (line.equals("exit")) {
-                break;
-            }
-            onConsoleInput(line);
+    }
+
+    @Override
+    protected void onLoopCycle(int index) {
+        String line = consoleInputService.readLine();
+        if (line.equals("exit")) {
+            stop();
         }
+        onConsoleInput(line);
     }
 
     @Override
     public void onApplicationStopped() {
         log.debug("Score: " + score);
+    }
+
+    @Override
+    protected void onNewDistanceRead(Double distance) {
+
     }
 
     @Override
@@ -52,34 +59,40 @@ public class LedOnButtonApp extends RaspberryBoxApplication {
 
     private void onConsoleInput(String line) {
         if (line.contains("fill")) {
-            String[] splitedLine = line.split("fill");
-            int level = Integer.parseInt(splitedLine[splitedLine.length - 1].trim());
-            fillScreen(level);
+            fill(line);
         } else if (line.contains("animation")) {
-            for (int i = 0; i < 3; i++) {
-                MatrixLine.forEachIndex(level -> {
-                    fillScreen(level);
-                    try {
-                        Thread.sleep(50);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
+            animation();
+        } else if (line.contains("clean")) {
+            screenService.setScreenFrame(new Matrix());
         } else {
             log.debug("Command not supported");
         }
     }
 
-    private void fillScreen(int level) {
-        if (level < 0 || level > MatrixLine.SIZE - 1) {
-            log.warn("Fill level must be from range 0-8");
-            return;
-        }
+    private void fill(String line) {
+        String[] splitedLine = line.split("fill");
+        int level = Integer.parseInt(splitedLine[splitedLine.length - 1].trim());
+        fillScreen(level);
+    }
 
-        MatrixBuilder builder = new MatrixBuilder();
-        IntStream.range(0, level+1).forEach(index -> builder.addRow(Row.createFullRow(7 - index)));
-        screenService.setScreenFrame(builder.build());
+    private void animation() {
+        for (int i = 0; i < 3; i++) {
+            Matrix.forEachIndex(level -> {
+                fillScreen(level);
+                try {
+                    Thread.sleep(150);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        screenService.setScreenFrame(new Matrix());
+    }
+
+    private void fillScreen(int level) {
+        List<Integer> rows = IntStream.range(0, level+1).boxed().collect(Collectors.toList());
+        Matrix matrix = new Matrix().fillRows(rows);//.flipVertically();
+        screenService.setScreenFrame(matrix);
     }
 
 }

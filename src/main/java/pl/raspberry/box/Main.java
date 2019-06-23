@@ -1,12 +1,16 @@
 package pl.raspberry.box;
 
+import org.slf4j.impl.SimpleLogger;
 import pl.raspberry.box.app.RaspberryBoxApplication;
-import pl.raspberry.box.app.jgolebiewski.LedOnButtonApp;
+import pl.raspberry.box.app.waveapp.DistanceTestApp;
 import pl.raspberry.box.client.service.websocket.WebSocketService;
 
 public class Main {
 
+    public static final String LOCALHOST = WebSocketService.LOCALHOST;
     public static final String RASPBERRY_HOST = "ws://192.168.0.15:9001";
+    public static final String RASPBERRY_HOST2 = "ws://192.168.43.126:9001";
+    public static final String RASPBERRY_HOST3 = "ws://192.168.10.14:9001";
 
     static RaspberryBoxApplication currentApplication;
 
@@ -16,17 +20,13 @@ public class Main {
     }
 
     private static void applyConfiguration() {
-        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
-        WebSocketService.configure(WebSocketService.LOCALHOST);
+        System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "DEBUG");
+        WebSocketService.configure(RASPBERRY_HOST2);
     }
 
     private static void startApplication() {
-        try {
-            currentApplication = new LedOnButtonApp();
-            currentApplication.start();
-        } finally {
-            currentApplication.stop();
-        }
+        currentApplication = new DistanceTestApp();
+        currentApplication.start();
     }
 
 }
