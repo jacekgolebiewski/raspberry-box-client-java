@@ -6,14 +6,12 @@ import pl.raspberry.box.core.model.request.screen.Matrix;
 import pl.raspberry.box.core.model.response.button.Button;
 import pl.raspberry.box.core.service.ScreenService;
 import pl.raspberry.box.core.service.console.ConsoleInputService;
-import pl.raspberry.box.core.util.GameUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.stream.IntStream;
 
 /**
  * Gra na wzór klasycznego flappy bird wykorzystująca czujnik odległości i matrycę led
@@ -57,13 +55,13 @@ public class FlappyBird extends RaspberryBoxApplication {
         if(endGame) {
             return;
         }
+        renderGame();
         updateSpeedDivider(index);
         int time = index/speedDivider;
         updateUserPosition();
         if( index % speedDivider == 0) {
             updateGameState(time);
         }
-        renderGame();
     }
 
     private void updateSpeedDivider(int index) {
@@ -99,20 +97,7 @@ public class FlappyBird extends RaspberryBoxApplication {
 
     private void gameFinished() {
         endGame = true;
-        Matrix empty = new Matrix();
-        Matrix sadFace = new Matrix()
-                .fillCell(1, 2, 1)
-                .fillCell(2, 2, 1)
-                .fillCell(6, 1, 1)
-                .fillCell(5, 2, 1)
-                .fillCell(5, 3, 1);
-        sadFace.join(sadFace.clone().flipHorizontally());
-        IntStream.range(0, 3).forEach(idx -> {
-            GameUtil.sleep(200);
-            screenService.setScreenFrame(sadFace);
-            GameUtil.sleep(200);
-            screenService.setScreenFrame(empty);
-        });
+        screenService.failScreen();
         stop();
     }
 

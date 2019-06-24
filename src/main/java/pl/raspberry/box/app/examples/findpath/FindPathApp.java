@@ -22,6 +22,8 @@ public abstract class FindPathApp extends RaspberryBoxApplication {
     private final ConsoleInputService consoleInputService = new ConsoleInputService();
     private final FindPathMapGenerator findPathMapGenerator = new FindPathMapGenerator();
 
+    private int score = 0;
+
     /**
      * This variable is used for map generation, should not be used in solution.
      */
@@ -41,7 +43,6 @@ public abstract class FindPathApp extends RaspberryBoxApplication {
         if(index % 70 == 0) {
             Matrix map = findPathMapGenerator.generateForPath(originPath);
             screenService.setScreenFrame(map);
-            GameUtil.sleep(1000);
             List<Point> solution = getPath(map);
             if(solution.get(0).getX() != 0) {
                 throw new RuntimeException("Algorytm nieprawidłowy, pierwszy punkt ścieżki musi mieć współrzędną X == 0");
@@ -49,22 +50,33 @@ public abstract class FindPathApp extends RaspberryBoxApplication {
             Matrix screen = map.clone();
             solution.forEach(point -> {
                 if(screen.getCellValue(point.getX(), point.getY()) == 1) {
+                    screenService.failScreen();
                     throw new RuntimeException("Algorytm nieprawidłowy, ścieżka nachodzi na zajęte pole");
                 }
                 screen.fillCell(point.getX(), point.getY(), 1);
-                screenService.setScreenFrame(screen);
-                GameUtil.sleep(1000);
+                showPath(map, screen, 2);
+                GameUtil.sleep(200);
             });
             if(solution.get(solution.size()-1).getX() != 7) {
+                screenService.failScreen();
                 throw new RuntimeException("Algorytm nieprawidłowy, ostatni punkt ścieżki musi mieć współrzędną X == 7");
             }
-            IntStream.range(0, 5).forEach(idx -> {
-                GameUtil.sleep(200);
-                screenService.setScreenFrame(map);
-                GameUtil.sleep(200);
-                screenService.setScreenFrame(screen);
-            });
+            showPath(map, screen, 5);
+            score++;
+            if(score >= 5) {
+                screenService.successScreen();
+                stop();
+            }
         }
+    }
+
+    private void showPath(Matrix map, Matrix screen, int times) {
+        IntStream.range(0, times).forEach(idx -> {
+            GameUtil.sleep(200);
+            screenService.setScreenFrame(map);
+            GameUtil.sleep(200);
+            screenService.setScreenFrame(screen);
+        });
     }
 
     @Override

@@ -3,6 +3,9 @@ package pl.raspberry.box.core.service;
 import pl.raspberry.box.core.model.request.screen.Matrix;
 import pl.raspberry.box.core.model.request.screen.ScreenRequest;
 import pl.raspberry.box.core.service.websocket.WebSocketService;
+import pl.raspberry.box.core.util.GameUtil;
+
+import java.util.stream.IntStream;
 
 public class ScreenService {
 
@@ -14,6 +17,40 @@ public class ScreenService {
 
     public void clean() {
         this.setScreenFrame(new Matrix());
+    }
+
+    public void successScreen() {
+        Matrix empty = new Matrix();
+        Matrix happyFace = new Matrix()
+                .fillCell(1, 2, 1)
+                .fillCell(2, 2, 1)
+                .fillCell(4, 1, 1)
+                .fillCell(5, 2, 1)
+                .fillCell(5, 3, 1);
+        happyFace.join(happyFace.clone().flipHorizontally());
+        IntStream.range(0, 5).forEach(idx -> {
+            GameUtil.sleep(200);
+            setScreenFrame(happyFace);
+            GameUtil.sleep(200);
+            setScreenFrame(empty);
+        });
+    }
+
+    public void failScreen() {
+        Matrix empty = new Matrix();
+        Matrix sadFace = new Matrix()
+                .fillCell(1, 2, 1)
+                .fillCell(2, 2, 1)
+                .fillCell(6, 1, 1)
+                .fillCell(5, 2, 1)
+                .fillCell(5, 3, 1);
+        sadFace.join(sadFace.clone().flipHorizontally());
+        IntStream.range(0, 5).forEach(idx -> {
+            GameUtil.sleep(200);
+            setScreenFrame(sadFace);
+            GameUtil.sleep(200);
+            setScreenFrame(empty);
+        });
     }
 
 }
