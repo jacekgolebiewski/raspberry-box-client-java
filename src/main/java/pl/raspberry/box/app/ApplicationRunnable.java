@@ -2,7 +2,7 @@ package pl.raspberry.box.app;
 
 
 import lombok.RequiredArgsConstructor;
-import pl.raspberry.box.client.util.GameUtil;
+import pl.raspberry.box.core.util.GameUtil;
 
 @RequiredArgsConstructor
 class ApplicationRunnable implements Runnable {
@@ -18,6 +18,7 @@ class ApplicationRunnable implements Runnable {
             GameUtil.sleep(100);
         }
         application.onApplicationStopped();
+        System.exit(0);
     }
 
 }

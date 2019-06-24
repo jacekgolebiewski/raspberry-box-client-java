@@ -3,18 +3,21 @@ package pl.raspberry.box.app;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import pl.raspberry.box.client.model.response.Response;
-import pl.raspberry.box.client.model.response.button.Button;
-import pl.raspberry.box.client.model.response.button.ButtonAction;
-import pl.raspberry.box.client.model.response.button.ButtonResponse;
-import pl.raspberry.box.client.model.response.distance.DistanceResponse;
-import pl.raspberry.box.client.model.response.message.MessageResponse;
-import pl.raspberry.box.client.service.websocket.WebSocketService;
+import pl.raspberry.box.core.model.response.Response;
+import pl.raspberry.box.core.model.response.button.Button;
+import pl.raspberry.box.core.model.response.button.ButtonAction;
+import pl.raspberry.box.core.model.response.button.ButtonResponse;
+import pl.raspberry.box.core.model.response.distance.DistanceResponse;
+import pl.raspberry.box.core.model.response.message.MessageResponse;
+import pl.raspberry.box.core.service.websocket.WebSocketService;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+/**
+ * Main application abstract class. If you want to create application extend it.
+ */
 @Slf4j
 public abstract class RaspberryBoxApplication {
 
@@ -41,12 +44,7 @@ public abstract class RaspberryBoxApplication {
         applicationThread = new Thread(new ApplicationRunnable(this), "ApplicationThread");
         this.webSocketService = WebSocketService.getInstance()
                 .onConnect(applicationThread::start)
-                .onDisconnect(() -> {
-                    // Try to reconnect if application is not finished
-                    if (!finished) {
-                        webSocketService.connect();
-                    }
-                })
+                .onDisconnect(() -> {})
                 .onResponse(this::handleResponse)
                 .connect();
     }
@@ -59,8 +57,7 @@ public abstract class RaspberryBoxApplication {
     public abstract void onApplicationStarted();
 
     /**
-     * Application loop cycle runs once per 100ms
-     * @param index
+     * Application loop cycle, after each cycle there is 100ms wait time
      */
     protected abstract void onLoopCycle(int index);
 
@@ -81,9 +78,17 @@ public abstract class RaspberryBoxApplication {
     }
 
     private void onDistanceResponse(DistanceResponse response) {
+        log.trace("onDistanceResponse: "+response.getDistance());
+        Double distance = response.getDistance();
+        if (distance < 5 || distance > 100) {
+            return;
+        }
         onNewDistanceRead(response.getDistance());
     }
 
+    /**
+     * Displays changes in distance within range 5-100cm
+     */
     protected abstract void onNewDistanceRead(Double distance);
 
     abstract public void onButtonPressed(Button button);

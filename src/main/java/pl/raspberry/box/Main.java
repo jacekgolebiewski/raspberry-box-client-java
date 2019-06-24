@@ -2,8 +2,8 @@ package pl.raspberry.box;
 
 import org.slf4j.impl.SimpleLogger;
 import pl.raspberry.box.app.RaspberryBoxApplication;
-import pl.raspberry.box.app.waveapp.DistanceTestApp;
-import pl.raspberry.box.client.service.websocket.WebSocketService;
+import pl.raspberry.box.app.examples.findpath.solution.CheaterPathFinderApp;
+import pl.raspberry.box.core.service.websocket.WebSocketService;
 
 public class Main {
 
@@ -25,7 +25,7 @@ public class Main {
     }
 
     private static void startApplication() {
-        currentApplication = new DistanceTestApp();
+        currentApplication = new CheaterPathFinderApp();
         currentApplication.start();
     }
 
