@@ -1,0 +1,1 @@
+Directory ignored by git for output files from application.
