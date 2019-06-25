@@ -1,9 +1,8 @@
-package pl.raspberry.box.core.model.request.screen;
+package pl.raspberry.box.core.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.raspberry.box.core.model.request.Request;
 
 import java.util.List;
 

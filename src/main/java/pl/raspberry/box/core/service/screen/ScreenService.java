@@ -1,7 +1,7 @@
-package pl.raspberry.box.core.service;
+package pl.raspberry.box.core.service.screen;
 
-import pl.raspberry.box.core.model.request.screen.Matrix;
-import pl.raspberry.box.core.model.request.screen.ScreenRequest;
+import pl.raspberry.box.core.model.Matrix;
+import pl.raspberry.box.core.model.request.ScreenRequest;
 import pl.raspberry.box.core.service.websocket.WebSocketService;
 import pl.raspberry.box.core.util.GameUtil;
 

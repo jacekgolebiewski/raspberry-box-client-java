@@ -3,7 +3,6 @@ package pl.raspberry.box.core.model.request;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
-import pl.raspberry.box.core.model.request.screen.ScreenRequest;
 
 import java.util.UUID;
 
