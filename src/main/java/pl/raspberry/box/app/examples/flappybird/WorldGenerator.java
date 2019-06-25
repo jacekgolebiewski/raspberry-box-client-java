@@ -1,7 +1,7 @@
 package pl.raspberry.box.app.examples.flappybird;
 
 import lombok.extern.slf4j.Slf4j;
-import pl.raspberry.box.core.model.request.screen.Matrix;
+import pl.raspberry.box.core.model.Matrix;
 
 import java.util.ArrayList;
 import java.util.Collections;

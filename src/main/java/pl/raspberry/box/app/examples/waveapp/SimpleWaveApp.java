@@ -2,10 +2,10 @@ package pl.raspberry.box.app.examples.waveapp;
 
 import lombok.extern.slf4j.Slf4j;
 import pl.raspberry.box.app.RaspberryBoxApplication;
-import pl.raspberry.box.core.model.request.screen.Matrix;
+import pl.raspberry.box.core.model.Matrix;
 import pl.raspberry.box.core.model.response.button.Button;
-import pl.raspberry.box.core.service.ScreenService;
 import pl.raspberry.box.core.service.console.ConsoleInputService;
+import pl.raspberry.box.core.service.screen.ScreenService;
 
 import java.util.Collections;
 import java.util.List;

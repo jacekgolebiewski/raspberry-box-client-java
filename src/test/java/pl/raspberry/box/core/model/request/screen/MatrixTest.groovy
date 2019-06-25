@@ -1,5 +1,6 @@
 package pl.raspberry.box.core.model.request.screen
 
+import pl.raspberry.box.core.model.Matrix
 import spock.lang.Specification
 
 class MatrixTest extends Specification {

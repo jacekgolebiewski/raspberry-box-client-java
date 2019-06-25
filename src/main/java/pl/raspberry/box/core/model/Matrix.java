@@ -1,4 +1,4 @@
-package pl.raspberry.box.core.model.request.screen;
+package pl.raspberry.box.core.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,6 +35,16 @@ public class Matrix {
 
     public static List<Integer> getEmptyList() {
         return Collections.nCopies(SIZE, 0);
+    }
+
+    public static Matrix fromArray(int[][] array) {
+        Matrix result = new Matrix();
+        forEachIndex(row -> {
+            forEachIndex(column -> {
+                result.fillCell(row, column, array[row][column]);
+            });
+        });
+        return result;
     }
 
     public Integer getCellValue(int row, int column) {
@@ -162,8 +172,8 @@ public class Matrix {
 
     public Matrix join(Matrix matrix) {
         forEachIndex(row -> {
-            forEachIndex(column-> {
-                if(matrix.getCellValue(row, column) == 1) {
+            forEachIndex(column -> {
+                if (matrix.getCellValue(row, column) == 1) {
                     this.fillCell(row, column, 1);
                 }
             });
