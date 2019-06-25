@@ -54,6 +54,9 @@ public abstract class RaspberryBoxApplication {
         this.webSocketService.disconnect();
     }
 
+    /**
+     * Invoked on application start, when connection is established
+     */
     public abstract void onApplicationStarted();
 
     /**
@@ -61,6 +64,9 @@ public abstract class RaspberryBoxApplication {
      */
     protected abstract void onLoopCycle(int index);
 
+    /**
+     * Invoked after stop() metod call, after this method program is exited
+     */
     public abstract void onApplicationStopped();
 
     private void onButtonAction(ButtonResponse response) {
@@ -87,12 +93,18 @@ public abstract class RaspberryBoxApplication {
     }
 
     /**
-     * Displays changes in distance within range 5-100cm
+     * Invoked every 200ms if distance sensor is used (changes in distance within range 5-100cm)
      */
     protected abstract void onNewDistanceRead(Double distance);
 
+    /**
+     * Invoked each time button is pressed
+     */
     abstract public void onButtonPressed(Button button);
 
+    /**
+     * Invoked each time button is released
+     */
     abstract public void onButtonReleased(Button button);
 
 }
