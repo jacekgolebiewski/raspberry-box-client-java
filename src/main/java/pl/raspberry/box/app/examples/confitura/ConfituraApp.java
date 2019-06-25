@@ -3,8 +3,8 @@ package pl.raspberry.box.app.examples.confitura;
 import lombok.extern.slf4j.Slf4j;
 import pl.raspberry.box.app.RaspberryBoxApplication;
 import pl.raspberry.box.core.model.response.button.Button;
-import pl.raspberry.box.core.service.ScreenService;
 import pl.raspberry.box.core.service.console.ConsoleInputService;
+import pl.raspberry.box.core.service.screen.ScreenService;
 
 /**
  * Szablon aplikacji confitura2019
