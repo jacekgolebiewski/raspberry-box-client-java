@@ -71,8 +71,12 @@ public class FlappyBird extends RaspberryBoxApplication {
             speedDivider = 5;
         } else if(index < 300) {
             speedDivider = 4;
-        } else {
+        } else if(index < 400) {
             speedDivider = 3;
+        } else if(index < 500) {
+            speedDivider = 2;
+        } else {
+            speedDivider = 1;
         }
     }
 
@@ -119,7 +123,7 @@ public class FlappyBird extends RaspberryBoxApplication {
     public void onApplicationStopped() {
         log.info("User: '" + userName + "' score is: " + score);
         try {
-            File resultsFile = new File("results.txt");
+            File resultsFile = new File("output/results.txt");
             resultsFile.createNewFile();
             Files.write(resultsFile.toPath(), (userName+";"+score+"\n").getBytes(), StandardOpenOption.APPEND);
         }catch (IOException e) {
