@@ -33,6 +33,21 @@ public class MatrixUtil {
         return transformMatrix(matrix, source -> new Pair<>(source.getFirst(), (source.getSecond() -1 + size) % size));
     }
 
+    public static List<List<Integer>> shiftRight(List<List<Integer>> matrix) {
+        int size = matrix.size();
+        return transformMatrix(matrix, source -> new Pair<>(source.getFirst(), (source.getSecond() +1 + size) % size));
+    }
+
+    public static List<List<Integer>> shiftUp(List<List<Integer>> matrix) {
+        int size = matrix.size();
+        return transformMatrix(matrix, source -> new Pair<>((source.getFirst() -1 + size) % size, source.getSecond()));
+    }
+
+    public static List<List<Integer>> shiftDown(List<List<Integer>> matrix) {
+        int size = matrix.size();
+        return transformMatrix(matrix, source -> new Pair<>((source.getFirst() +1 + size) % size, source.getSecond()));
+    }
+
     public static List<List<Integer>> rotate(List<List<Integer>> matrix, int count) {
         if (count < 1 || count > 3) {
             throw new IllegalArgumentException("Flip count parameter must be in range 1-3, got: " + count);

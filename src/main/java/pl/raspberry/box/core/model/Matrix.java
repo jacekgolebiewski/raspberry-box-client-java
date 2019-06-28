@@ -152,6 +152,21 @@ public class Matrix {
         return this;
     }
 
+    public Matrix shiftRight() {
+        array = MatrixUtil.shiftRight(array);
+        return this;
+    }
+
+    public Matrix shiftUp() {
+        array = MatrixUtil.shiftUp(array);
+        return this;
+    }
+
+    public Matrix shiftDown() {
+        array = MatrixUtil.shiftDown(array);
+        return this;
+    }
+
     private List<Integer> adjustList(List<Integer> list) {
         Objects.requireNonNull(list);
         List<Integer> result = new ArrayList<>(list);

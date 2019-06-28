@@ -96,8 +96,16 @@ public class CharToMatrixService {
                     .put("+", new int[][]{{0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 1, 1, 1, 1, 1, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0}})
                     .build();
 
+    public Matrix getMatrix(char character) {
+        return getMatrix(character+"");
+    }
+
     public Matrix getMatrix(String character) {
-        return Matrix.fromArray(chars.get(character.substring(0, 1)));
+        int[][] array = chars.get(character.substring(0, 1));
+        if (array == null) {
+            return new Matrix();
+        }
+        return Matrix.fromArray(array);
     }
 
     public Matrix arrowUp() {

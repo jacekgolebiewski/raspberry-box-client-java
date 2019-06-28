@@ -10,9 +10,23 @@ import java.util.stream.IntStream;
 public class ScreenService {
 
     private WebSocketService webSocketService = WebSocketService.getInstance();
+    private CharToMatrixService charToMatrixService = new CharToMatrixService();
 
     public void setScreenFrame(Matrix matrix) {
         this.webSocketService.sendRequest(new ScreenRequest(matrix.clone().flipVertically().getArray()));
+    }
+
+    public void setText(String text) {
+        setText(text, 500);
+    }
+
+    public void setText(String text, long delay) {
+        if (text != null) {
+            for(int i=0; i< text.length(); i++) {
+                setScreenFrame(charToMatrixService.getMatrix(text.charAt(i)));
+                GameUtil.sleep(delay);
+            }
+        }
     }
 
     public void clean() {
